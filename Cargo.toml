@@ -1,0 +1,17 @@
+[package]
+name = "taskbarro2"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[dependencies.windows]
+version = "0.61.1"
+features = [
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_Graphics_Gdi",
+  "Win32_UI_Accessibility",
+]
+
+[build-dependencies]
+embed-manifest = "1.4.0"
