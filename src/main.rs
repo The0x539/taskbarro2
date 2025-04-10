@@ -7,7 +7,7 @@ use std::{
 };
 use windows::Win32::{
     Foundation::{GetLastError, HINSTANCE, HWND, LPARAM, RECT},
-    Graphics::Gdi as gdi,
+    Graphics::{Dwm as dwm, Gdi as gdi},
     UI::{Accessibility as acc, WindowsAndMessaging as wam},
 };
 use windows::core::{BOOL, Result};
@@ -160,6 +160,19 @@ pub unsafe fn check(hwnd: HWND, area: &RECT) -> Result<bool> {
         || info.dwExStyle.contains(wam::WS_EX_TOOLWINDOW);
 
     if not_a_real_window {
+        return Ok(false);
+    }
+
+    let mut cloaked = 0u32;
+    unsafe {
+        dwm::DwmGetWindowAttribute(
+            hwnd,
+            dwm::DWMWA_CLOAKED,
+            (&raw mut cloaked).cast(),
+            std::mem::size_of_val(&cloaked) as u32,
+        )?;
+    }
+    if cloaked != 0 {
         return Ok(false);
     }
 
